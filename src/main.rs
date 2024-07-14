@@ -14,68 +14,18 @@ struct State {}
 
 register_plugin!(State);
 
-macro_rules! string {
-    ( $x:expr ) => {
-        String::from($x)
-    };
-}
-
 fn initialize(params: InitializeParams) -> Result<()> {
-    PLUGIN_RPC.stderr("lapce-zig");
-    let arch = match VoltEnvironment::architecture().as_deref() {
-        Ok("x86_64") => "x86_64",
-        Ok("aarch64") => "aarch64",
-        _ => panic!("unknow arch"),
-    };
-    let os = match VoltEnvironment::operating_system().as_deref() {
-        Ok("linux") => "linux",
-        Ok("macos") => "macos",
-        Ok("windows") => "windows",
-        _ => return Ok(()),
-    };
+    PLUGIN_RPC.stderr("lapce-haskell");
     let document_selector: DocumentSelector = vec![DocumentFilter {
-        language: Some(String::from("zig")),
-        pattern: Some(String::from("**.zig")),
+        language: Some(String::from("haskell")),
+        pattern: None,
         scheme: None,
     }];
-    let mut server_args = vec![];
-
-    if let Some(options) = params.initialization_options.as_ref() {
-        if let Some(lsp) = options.get("lsp") {
-            if let Some(args) = lsp.get("serverArgs") {
-                if let Some(args) = args.as_array() {
-                    if !args.is_empty() {
-                        server_args = vec![];
-                    }
-                    for arg in args {
-                        if let Some(arg) = arg.as_str() {
-                            server_args.push(arg.to_string());
-                        }
-                    }
-                }
-            }
-
-            if let Some(server_path) = lsp.get("serverPath") {
-                if let Some(server_path) = server_path.as_str() {
-                    if !server_path.is_empty() {
-                        let url = Url::parse(&format!("urn:{}", server_path))?;
-                        PLUGIN_RPC.start_lsp(
-                            url,
-                            server_args,
-                            document_selector,
-                            params.initialization_options,
-                        );
-                        return Ok(());
-                    }
-                }
-            }
-        }
-    }
-
-    // let server_path = Url::parse("urn:zls")?;
-    download_zls(arch, os)?;
     let volt_uri = VoltEnvironment::uri()?;
-    let server_path = Url::parse(&volt_uri).unwrap().join("zls")?;
+    let server_path = Url::parse(&volt_uri)
+        .unwrap()
+        .join("haskell-language-server-wrapper")?;
+    let server_args = vec![String::from("--lsp")];
     PLUGIN_RPC.start_lsp(
         server_path,
         server_args,
@@ -99,34 +49,4 @@ impl LapcePlugin for State {
             _ => {}
         }
     }
-}
-
-fn download_zls(arch: &str, os: &str) -> Result<bool> {
-    const DOWNLOADS_ROOT: &str = "https://zig.pm/zls/downloads";
-
-    let lapce_zls_base_name = match VoltEnvironment::operating_system().as_deref() {
-        Ok("windows") => {
-            string!("zls.exe")
-        }
-        _ => string!("zls"),
-    };
-    let lapce_zls_path = Path::new(&lapce_zls_base_name);
-
-    if !lapce_zls_path.exists() {
-        let volt_download_url = format!(
-            "{}/{}-{}/bin/{}",
-            &DOWNLOADS_ROOT, &arch, &os, &lapce_zls_base_name
-        );
-        PLUGIN_RPC.stderr(&format!("Download_URL {}", volt_download_url));
-
-        let mut resp = Http::get(&volt_download_url)?;
-        if resp.status_code.is_success() {
-            let body = resp.body_read_all()?;
-            std::fs::write(lapce_zls_path, body)?;
-        }
-    } else {
-        PLUGIN_RPC.stderr("zls already exists");
-    }
-
-    Ok(true)
 }

@@ -99,6 +99,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "lapce-haskell"
+version = "0.0.1"
+dependencies = [
+ "anyhow",
+ "lapce-plugin",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "lapce-plugin"
 version = "0.1.0"
 source = "git+https://github.com/lapce/lapce-plugin-rust.git#768bb44edf5ca3d777a5ba13ec8d2de10b80cdae"
@@ -113,16 +123,6 @@ dependencies = [
  "serde",
  "serde_json",
  "wasi-experimental-http",
-]
-
-[[package]]
-name = "lapce-zig"
-version = "0.0.2"
-dependencies = [
- "anyhow",
- "lapce-plugin",
- "serde",
- "serde_json",
 ]
 
 [[package]]

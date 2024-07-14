@@ -1,19 +1,17 @@
-name = "lapce-zig"
-display-name = "Zig"
-description = "Zig for Lapce: powered by Zig Language Server"
-version = "0.1.2"
-author = "Syntacti"
-repository = "syntacti/lapce-zig"
-icon = "assets/zig-logo.webp"
-wasm = "lapce-zig.wasm"
+name = "lapce-haskell"
+display-name = "Haskell"
+description = "Haskell for Lapce: powered by Haskell Language Server"
+version = "0.0.1" 
+author = "MangoIV"
+repository = "mangoiv/lapce-haskell"
+icon = "assets/haskell.svg"
+wasm = "lapce-haskell.wasm"
 
 
 [activation]
-language = ["zig"]
-workspace-contains = ["*/build.zig"]
-
+language = ["haskell"]
 
 
 [config."serverPath"]
 default = ""
-description = "Path to zls executable. When empty, it points to the bundled binary."
+description = "Path to hls executable. When empty, it uses the haskell-language-server-wrapper currently in $PATH"

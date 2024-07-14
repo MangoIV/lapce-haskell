@@ -1,9 +1,9 @@
 [package]
 edition = "2021"
-name = "lapce-zig"
-version = "0.0.2"
+name = "lapce-haskell"
+version = "0.0.1"
 
-[target.'cfg(target_os = "wasi")'.dependencies]
+[dependencies]
 
 # default deps for all lapce plugins
 anyhow = "1.0"

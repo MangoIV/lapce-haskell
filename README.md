@@ -1,4 +1,5 @@
-# lapce-zig
-Zig plugin for Lapce
+# lapce-haskell
 
-Note: currently only supports nightly
+Haskell plugin for Lapce
+
+looks up haskell-language-server-wrapper in `$PATH`. Does not install for you. Do this with GHCup
